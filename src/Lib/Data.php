@@ -13,6 +13,10 @@ use CEBDeclare\Traits\TraitThrow;
 abstract class Data
 {
     use TraitThrow;
+    protected $version = '1.0';
+    protected $xmlWithAttributes = null;
+    protected $xmlFirstWrapper = null;
+    protected $xmlFirstWrapperWithCebFlag = true;
     protected $conf = [];
 
     public function uuid()
@@ -39,22 +43,41 @@ abstract class Data
         $this->conf = $conf->get('conf');
     }
 
+    /**
+     * @return string
+     * @throws \Exception
+     */
     public function toXml()
     {
         if (isset($this->data) && $this->data) {
-            $guid = '';
-            if (isset($this->data['CEB621Message']) && isset($this->data['CEB621Message']['guid'])) {
-                $guid = $this->data['CEB621Message']['guid'];
-            }
-            if (empty($guid)) $this->broken('the guid is empty');
-            $xml = '<?xml version="1.0" encoding="UTF-8"?> <ceb:CEB621Message guid="'.$guid.'" version="1.0" xmlns:ceb="http://www.chinaport.gov.cn/ceb" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">';
+            $this->fillXmlAttributes();
+            $this->fillXmlFirstWrapperAndAttributes();
+            $this->mergeConf();
+            $this->validate();
+            $xml = '<?xml '.$this->buildXmlAttributes($this->xmlWithAttributes).' ?> <'.($this->xmlFirstWrapperWithCebFlag?'ceb:':'').$this->xmlFirstWrapper['name'].$this->buildXmlAttributes($this->xmlFirstWrapper['attributes']).'>';
             $data = $this->data;
-            if (isset($data['CEB621Message'])) unset($data['CEB621Message']);
-            $xml .= $this->createXmlRecursion($data).' </ceb:CEB621Message>';
+            if (isset($data[$this->xmlFirstWrapper['name']])) unset($data[$this->xmlFirstWrapper['name']]);
+            $xml .= $this->createXmlRecursion($data)." </".($this->xmlFirstWrapperWithCebFlag?'ceb:':'')."{$this->xmlFirstWrapper['name']}>";
             return $xml;
         } else {
             $this->broken('the xml content lost');
         }
+    }
+
+    /**
+     * to build xml attributes from the data gaven
+     * @param array $data
+     * @return string|null
+     * @throws \Exception
+     */
+    private function buildXmlAttributes(array $data)
+    {
+        $str = '';
+        foreach ($data as $k => $v) {
+            if (!$v) $this->broken("the xml attribute {$k} empty");
+            $str .= " {$k}=\"{$v}\" ";
+        }
+        return $str;
     }
 
     private function createXmlRecursion($data, string $prefix = 'ceb')
@@ -74,5 +97,7 @@ abstract class Data
     }
 
     abstract public function mergeConf();
+    abstract public function fillXmlAttributes();
+    abstract public function fillXmlFirstWrapperAndAttributes();
     abstract public function validate();
 }

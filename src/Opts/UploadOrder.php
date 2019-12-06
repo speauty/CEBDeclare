@@ -2,33 +2,34 @@
 /**
  * Author:  Speauty
  * Email:   speauty@163.com
- * File:    BuildSign.php
- * Created: 2019/12/2 上午11:52
+ * File:    UploadOrder.php
+ * Created: 2019/12/6 上午9:04
  */
 
 namespace CEBDeclare\Opts;
-use CEBDeclare\Data\BuildSignData;
+use CEBDeclare\Data\OrderData;
 use CEBDeclare\Lib\AbstractClient;
 use CEBDeclare\Lib\Conf;
 
 
 /**
- * Class BuildSign
+ * Class UploadOrder
  * @package CEBDeclare\Opts
  */
-class BuildSign extends AbstractClient
+class UploadOrder extends AbstractClient
 {
     /**
      * @param Conf $conf
-     * @param array $signData
+     * @param array $orderHead
+     * @param array $orderList
      * @return array|null
      * @throws \Exception
      */
-    public function run(Conf $conf, array $signData)
+    public function run(Conf $conf, array $orderHead, array $orderList)
     {
-        $inventory = new BuildSignData($signData);
-        $inventory->loadConf($conf);
-        $xml = $inventory->toXml();
+        $order = new OrderData($orderHead, $orderList, []);
+        $order->loadConf($conf);
+        $xml = $order->toXml();
         $response = $this->http()->post($this->uri, [
             'form_params' => [
                 'xml' => $xml

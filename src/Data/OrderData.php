@@ -16,6 +16,7 @@ use CEBDeclare\Lib\Data;
  */
 class OrderData extends Data
 {
+    protected $xmlFirstWrapperWithCebFlag = true;
     protected $orderListTemplate = [
         /** 商品序号 从1开始的递增序号 */
         'gnum' => 1,
@@ -47,7 +48,7 @@ class OrderData extends Data
     protected $data = [
         'CEB311Message' => [
             'guid' => '',
-            'version' => ''
+            'version' => '1.0'
         ],
         'Order' => [
             'OrderHead' => [
@@ -55,7 +56,7 @@ class OrderData extends Data
                 'guid' => '',
                 /** 报送类型 企业报送类型. 1-新增 2-变更 */
                 'appType' => '',
-                /** 报送时间 企 业 报 送 时 间. 格式:YYYYMMDDhhmmss */
+                /** 报送时间 企业报送时间. 格式:YYYYMMDDhhmmss */
                 'appTime' => '',
                 /** 业务状态 业务状态: 1-暂存,2-申报,默认为2 */
                 'appStatus' => '',
@@ -119,7 +120,7 @@ class OrderData extends Data
             /** 传输企业名称 报文传输的企业名称 */
             'copName' => '',
             /** 报文传输模式 默认为DXP;指中国电子口岸数据交换平台 */
-            'dxpMode' => '',
+            'dxpMode' => 'DXP',
             /** 报文传输编号 向中国电子口岸数据中心申请数据交换平台的用户编号 */
             'dxpId' => '',
             'note' => ''
@@ -145,7 +146,7 @@ class OrderData extends Data
             }
         }
         $orderHead['guid'] = $uuid;
-        $this->data['CEB621Message']['guid'] = $uuid;
+        $this->data['CEB311Message']['guid'] = $uuid;
         $this->data['Order']['OrderHead'] = array_intersect_key(array_merge($this->data['Order']['OrderHead'], $orderHead), $this->data['Order']['OrderHead']);
         foreach ($orderList as $v) {
             $this->data['Order']['OrderList'][] = array_intersect_key(array_merge($this->orderListTemplate, $v), $this->orderListTemplate);
@@ -164,6 +165,27 @@ class OrderData extends Data
         $this->data['BaseTransfer'] = array_intersect_key(array_merge($this->data['BaseTransfer'], $this->conf), $this->data['BaseTransfer']);
     }
 
+    public function fillXmlAttributes()
+    {
+        $this->xmlWithAttributes = [
+            'version' => $this->version,
+            'encoding' => 'UTF-8'
+        ];
+    }
+
+    public function fillXmlFirstWrapperAndAttributes()
+    {
+        $this->xmlFirstWrapper = [
+            'name' => 'CEB311Message',
+            'attributes' => [
+                'version' => $this->version,
+                'guid' => $this->data['CEB311Message']['guid'],
+                'xmlns:ceb' => 'http://www.chinaport.gov.cn/ceb',
+                'xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance',
+            ]
+        ];
+    }
+
     /**
      * 验证数据有效性
      * @throws \Exception
@@ -173,14 +195,14 @@ class OrderData extends Data
         if (empty($this->conf)) $this->broken('the conf not load');
 
         /** 检测CEB621Message */
-        foreach ($this->data['CEB621Message'] as $k => $v) {
+        foreach ($this->data['CEB311Message'] as $k => $v) {
             if (empty($v)) {
-                $this->broken("the node CEB621Message.{$k} is empty");
+                $this->broken("the node CEB311Message.{$k} is empty");
             }
         }
 
         /** 检测OrderHead */
-        $orderHeadCanIgnore = ['batchNumbers', 'consigneeDistrict', 'note'];
+        $orderHeadCanIgnore = ['batchNumbers', 'consigneeDistrict', 'note', 'freight', 'discount', 'taxTotal'];
 
         if (!in_array($this->data['Order']['OrderHead']['appType'], ['1', '2'], true)) {
             $this->broken('the node Order.OrderHead.appType invalid');
@@ -215,9 +237,7 @@ class OrderData extends Data
         }
 
         /** 检测OrderList */
-        $orderListCanIgnore = [
-            'itemNo', 'itemDescribe', 'barCode', 'note'
-        ];
+        $orderListCanIgnore = ['itemNo', 'itemDescribe', 'barCode', 'note'];
 
         foreach ($this->data['Order']['OrderList'] as $k => $v) {
             foreach ($v as $sk => $sv) {

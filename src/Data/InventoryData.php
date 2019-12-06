@@ -16,6 +16,7 @@ use CEBDeclare\Lib\Data;
  */
 class InventoryData extends Data
 {
+    protected $xmlFirstWrapperWithCebFlag = true;
     protected $inventoryListTemplate = [
         /** 序号 从1开始连续序号, 与关联的电子订单表体序号一一对应*/
         'gnum' => 1,
@@ -230,6 +231,27 @@ class InventoryData extends Data
         $this->data['Inventory']['InventoryHead'] = array_intersect_key(array_merge($this->data['Inventory']['InventoryHead'], $this->conf), $this->data['Inventory']['InventoryHead']);
         /** 合并BaseTransfer节点 */
         $this->data['BaseTransfer'] = array_intersect_key(array_merge($this->data['BaseTransfer'], $this->conf), $this->data['BaseTransfer']);
+    }
+
+    public function fillXmlAttributes()
+    {
+        $this->xmlWithAttributes = [
+            'version' => $this->version,
+            'encoding' => 'UTF-8'
+        ];
+    }
+
+    public function fillXmlFirstWrapperAndAttributes()
+    {
+        $this->xmlFirstWrapper = [
+            'name' => 'CEB621Message',
+            'attributes' => [
+                'version' => $this->version,
+                'guid' => $this->data['CEB621Message']['guid'],
+                'xmlns:ceb' => 'http://www.chinaport.gov.cn/ceb',
+                'xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance'
+            ]
+        ];
     }
 
     /**

@@ -13,7 +13,7 @@ $conf = include_once 'conf.php';
 $conf = new Conf($conf);
 
 $time = time();
-$inventoryHead = [
+$head = [
     'appType' => '1',
     'appTime' => date('YmdHis', $time),
     'appStatus' => '2',
@@ -45,7 +45,7 @@ $inventoryHead = [
     'netWeight' => 3.00,
     'note' => ''
 ];
-$inventoryList = [
+$list = [
     [
         'gnum' => 1,
         'itemRecordNo' => '2131321',
@@ -67,8 +67,53 @@ $inventoryList = [
     ]
 ];
 
+
+$head = [
+    'appType' => '1',
+    'appTime' => date('YmdHis', $time),
+    'appStatus' => '2',
+    'orderNo' => 'A000001',
+    'goodsValue' => 10,
+    'freight' => 0,
+    'discount' => 0,
+    'taxTotal' => 0,
+    'acturalPaid' => 10,
+    'buyerName' => '范德萨',
+    'buyerTelephone' => '4326742874267847827482',
+    'buyerIdNumber' => 'feerqweeqwrwq',
+    'buyerRegNo' => 'fdafd',
+    'payCode' => 'fsdafsd',
+    'payName' => 'fdsafdsa',
+    'payTransactionId' => 'fdsafdsaf',
+    'consignee' => 'fdsafsa',
+    'consigneeTelephone' => 'fdsaf',
+    'consigneeAddress' => 'fdsafas',
+    'note' => 'fdsaf',
+];
+$list = [
+    [
+        'gnum' => 1,
+        'itemNo' => 'B23213121',
+        'itemName' => 'fdsa',
+        'gmodel' => 'fdsaf',
+        'itemDescribe' => 'fdsa',
+        'unit' => '132',
+        'qty' => 1,
+        'price' => 10,
+        'totalPrice' => 10,
+        'country' => '111',
+    ]
+];
 $declare = new CEBDeclare();
-$inventory = $declare->getClass('inventory');
-$res = $inventory->run($conf, $inventoryHead, $inventoryList);
-var_dump($res);
+//$order = $declare->getClass('order');
+//$res = $order->run($conf, $head, $list);
+//var_dump($res);
+$signData = [
+    'userInfo' => '1BB81DD910C74D7AA3688BB1CF2CFBB6',
+    'customsRegistCode' => 'testCode',
+    'waitSignData' => 'data',
+    'purpose' => '原始',
+    'copNo' => '原始',
+];
+var_dump($declare->getClass('sign')->run($conf, $signData));
 

@@ -13,8 +13,6 @@ use CEBDeclare\Lib\Conf;
 
 class UploadInventory extends AbstractClient
 {
-    protected $uri = 'http://222.211.87.12:7112/rest/declare';
-
     /**
      * @param Conf $conf
      * @param array $inventoryHead
@@ -26,8 +24,6 @@ class UploadInventory extends AbstractClient
     {
         $inventory = new InventoryData($inventoryHead, $inventoryList, []);
         $inventory->loadConf($conf);
-        $inventory->mergeConf();
-        $inventory->validate();
         $xml = $inventory->toXml();
         $response = $this->http()->post($this->uri, [
             'form_params' => [

@@ -8,7 +8,9 @@
 
 namespace CEBDeclare;
 use CEBDeclare\Lib\Core;
+use CEBDeclare\Opts\BuildSign;
 use CEBDeclare\Opts\UploadInventory;
+use CEBDeclare\Opts\UploadOrder;
 
 
 /**
@@ -18,7 +20,9 @@ use CEBDeclare\Opts\UploadInventory;
 class CEBDeclare extends Core
 {
     private $registers = [
-        'inventory' => UploadInventory::class
+        'inventory' => UploadInventory::class,
+        'order' => UploadOrder::class,
+        'sign' => BuildSign::class
     ];
 
     public function getClass(string $name)

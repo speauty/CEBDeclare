@@ -13,4 +13,5 @@ use CEBDeclare\Traits\Http;
 abstract class AbstractClient
 {
     use Http;
+    protected $uri = 'http://222.211.87.12:7112/rest/declare';
 }
