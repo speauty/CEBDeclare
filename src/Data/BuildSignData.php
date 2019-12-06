@@ -32,6 +32,7 @@ class BuildSignData extends Data
             'purpose' => '',
             /** 备注 支付企业的海关注册登记编号 */
             'note' => '',
+            'type' => ''
         ]
     ];
 
@@ -61,7 +62,8 @@ class BuildSignData extends Data
             'name' => 'CEBSignMessage',
             'attributes' => [
                 'version' => $this->version,
-                'xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance'
+                'xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance',
+                'xmlns:ceb' => 'http://www.chinaport.gov.cn/ceb'
             ]
         ];
     }
