@@ -1,0 +1,24 @@
+{
+    "name": "speauty/ceb-declare",
+    "description": "This is a library package",
+    "type": "library",
+    "license": "Apache",
+    "minimum-stability": "dev",
+    "authors": [
+        {
+            "name": "speauty",
+            "email": "speauty@163.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.3",
+        "guzzlehttp/guzzle": "^6",
+        "ext-json": "*",
+        "ext-simplexml": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "CEBDeclare\\": "src/",
+        }
+    }
+}
