@@ -2,7 +2,7 @@
     "name": "speauty/ceb-declare",
     "description": "This is a library package",
     "type": "library",
-    "license": "",
+    "license": "MIT",
     "minimum-stability": "dev",
     "authors": [
         {
