@@ -85,9 +85,9 @@ abstract class Data
         $xml = '';
         foreach ($data as $k => $v) {
             if (is_array($v)) {
-                if (!is_int($k)) $xml .= " <{$prefix}:{$k}>";
+                if (is_string($k)) $xml .= " <{$prefix}:{$k}>";
                 $xml .= $this->createXmlRecursion($v);
-                if (!is_int($k)) $xml .= " </{$prefix}:{$k}>";
+                if (is_string($k)) $xml .= " </{$prefix}:{$k}>";
             } else {
                 $v = trim($v);
                 $xml .= " <{$prefix}:{$k}>{$v}</{$prefix}:{$k}>";

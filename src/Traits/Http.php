@@ -24,7 +24,6 @@ trait Http
         }
         $contents = $result->getBody()->getContents();
         $contents = json_decode(json_encode(simplexml_load_string($contents)), true);
-//        var_dump($contents);
-        return next($contents);
+        return is_array($contents)?next($contents):null;
     }
 }
