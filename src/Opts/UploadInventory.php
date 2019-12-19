@@ -25,11 +25,13 @@ class UploadInventory extends AbstractClient
         $inventory = new InventoryData($inventoryHead, $inventoryList, []);
         $inventory->loadConf($conf);
         $xml = $inventory->toXml();
+        $this->requestXml = $xml;
         $response = $this->http()->post($this->uri, [
             'form_params' => [
                 'xml' => $xml
             ]
         ]);
+        $this->responseXml = $response->getBody()->getContents();
         return $this->result($response);
     }
 }

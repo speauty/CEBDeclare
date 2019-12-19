@@ -18,6 +18,7 @@ use CEBDeclare\Lib\Conf;
  */
 class UploadOrder extends AbstractClient
 {
+
     /**
      * @param Conf $conf
      * @param array $orderHead
@@ -30,11 +31,13 @@ class UploadOrder extends AbstractClient
         $order = new OrderData($orderHead, $orderList, []);
         $order->loadConf($conf);
         $xml = $order->toXml();
+        $this->requestXml = $xml;
         $response = $this->http()->post($this->uri, [
             'form_params' => [
                 'xml' => $xml
             ]
         ]);
+        $this->responseXml = $response->getBody()->getContents();
         return $this->result($response);
     }
 }

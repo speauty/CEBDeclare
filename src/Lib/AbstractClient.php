@@ -14,4 +14,16 @@ abstract class AbstractClient
 {
     use Http;
     protected $uri = 'http://222.211.87.12:7112/rest/declare';
+    protected $requestXml = '';
+    protected $responseXml = '';
+
+    public function getRequestXml()
+    {
+        return $this->requestXml;
+    }
+
+    public function getResponseXml()
+    {
+        return $this->responseXml;
+    }
 }

@@ -29,12 +29,13 @@ class BuildSign extends AbstractClient
         $inventory = new BuildSignData($signData);
         $inventory->loadConf($conf);
         $xml = $inventory->toXml();
-        var_dump($xml);
+        $this->requestXml = $xml;
         $response = $this->http()->post($this->uri, [
             'form_params' => [
                 'xml' => $xml
             ]
         ]);
+        $this->responseXml = $response->getBody()->getContents();
         return $this->result($response);
     }
 }
