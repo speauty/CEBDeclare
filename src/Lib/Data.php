@@ -18,7 +18,8 @@ abstract class Data
     protected $xmlFirstWrapper = null;
     protected $xmlFirstWrapperWithCebFlag = true;
     protected $conf = [];
-    protected $orderListFlag = false;
+    protected $listFlag = false;
+    protected $listName = '';
 
     public function uuid()
     {
@@ -87,15 +88,19 @@ abstract class Data
         foreach ($data as $k => $v) {
             if (is_array($v)) {
                 $tag = $k;
-                if ($k === 'OrderList') {
-                    $this->orderListFlag = true;
+                if ($k === 'OrderList' || $k === 'InventoryList') {
+                    $this->listFlag = true;
+                    $this->listName = $k;
                     $tag = '';
                 }
-                if ($this->orderListFlag && is_int($k)) $tag = 'OrderList';
+                if ($this->listFlag && is_int($k) && $this->listName) $tag = $this->listName;
                 $tag && ($xml .= " <{$prefix}:{$tag}>");
                 $xml .= $this->createXmlRecursion($v);
                 $tag && ($xml .= " </{$prefix}:{$tag}>");
-                if ($k === 'OrderList')  $this->orderListFlag = false;
+                if ($k === 'OrderList' || $k === 'InventoryList') {
+                    $this->listFlag = false;
+                    $this->listName = '';
+                }
             } else {
                 $v = trim($v);
                 $xml .= " <{$prefix}:{$k}>{$v}</{$prefix}:{$k}>";
