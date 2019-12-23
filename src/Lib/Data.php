@@ -59,8 +59,6 @@ abstract class Data
             $data = $this->data;
             if (isset($data[$this->xmlFirstWrapper['name']])) unset($data[$this->xmlFirstWrapper['name']]);
             $xml .= $this->createXmlRecursion($data)." </".($this->xmlFirstWrapperWithCebFlag?'ceb:':'')."{$this->xmlFirstWrapper['name']}>";
-            var_dump($xml);
-            die();
             return $xml;
         } else {
             $this->broken('the xml content lost');
