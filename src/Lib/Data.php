@@ -18,6 +18,7 @@ abstract class Data
     protected $xmlFirstWrapper = null;
     protected $xmlFirstWrapperWithCebFlag = true;
     protected $conf = [];
+    protected $orderListFlag = false;
 
     public function uuid()
     {
@@ -58,6 +59,8 @@ abstract class Data
             $data = $this->data;
             if (isset($data[$this->xmlFirstWrapper['name']])) unset($data[$this->xmlFirstWrapper['name']]);
             $xml .= $this->createXmlRecursion($data)." </".($this->xmlFirstWrapperWithCebFlag?'ceb:':'')."{$this->xmlFirstWrapper['name']}>";
+            var_dump($xml);
+            die();
             return $xml;
         } else {
             $this->broken('the xml content lost');
@@ -85,9 +88,16 @@ abstract class Data
         $xml = '';
         foreach ($data as $k => $v) {
             if (is_array($v)) {
-                if (is_string($k)) $xml .= " <{$prefix}:{$k}>";
+                $tag = $k;
+                if ($k === 'OrderList') {
+                    $this->orderListFlag = true;
+                    $tag = '';
+                }
+                if ($this->orderListFlag && is_int($k)) $tag = 'OrderList';
+                $tag && ($xml .= " <{$prefix}:{$tag}>");
                 $xml .= $this->createXmlRecursion($v);
-                if (is_string($k)) $xml .= " </{$prefix}:{$k}>";
+                $tag && ($xml .= " </{$prefix}:{$tag}>");
+                if ($k === 'OrderList')  $this->orderListFlag = false;
             } else {
                 $v = trim($v);
                 $xml .= " <{$prefix}:{$k}>{$v}</{$prefix}:{$k}>";
