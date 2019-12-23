@@ -16,14 +16,4 @@ trait Http
     {
         return new Client();
     }
-
-    public function result(ResponseInterface $result):?array
-    {
-        if ($result->getStatusCode() !== 200) {
-            throw new \Exception('network broken');
-        }
-        $contents = $result->getBody()->getContents();
-        $contents = json_decode(json_encode(simplexml_load_string($contents)), true);
-        return is_array($contents)?next($contents):null;
-    }
 }

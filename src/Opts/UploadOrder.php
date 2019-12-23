@@ -38,6 +38,6 @@ class UploadOrder extends AbstractClient
             ]
         ]);
         $this->responseXml = $response->getBody()->getContents();
-        return $this->result($response);
+        return $this->result();
     }
 }

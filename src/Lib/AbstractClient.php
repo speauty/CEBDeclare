@@ -26,4 +26,10 @@ abstract class AbstractClient
     {
         return $this->responseXml;
     }
+
+    public function result()
+    {
+        $contents = json_decode(json_encode(simplexml_load_string($this->responseXml)), true);
+        return is_array($contents)?next($contents):null;
+    }
 }
